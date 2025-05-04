@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Drawer } from 'expo-router/drawer';
+import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KostProvider } from '../context/KostContext';
 import './globals.css';
@@ -24,19 +25,48 @@ export default function Layout() {
             options={{
               drawerLabel: 'Home',
               title: 'Home',
+              drawerItemStyle: { display: 'none' },
               drawerIcon: ({ color, size }) => (
                 <Ionicons name='home-outline' size={size} color={color} />
               )
             }}
           />
           <Drawer.Screen
-            name='manage-kost'
+            name='(manage)'
             options={{
               drawerLabel: 'Manage Kost',
-              title: 'Manage Kost',
-              drawerIcon: ({ color, size }) => (
-                <Ionicons name='settings-outline' size={size} color={color} />
-              )
+              title: 'Manage Kost'
+            }}
+          />
+          <Drawer.Screen
+            name='home'
+            options={{
+              drawerLabel: 'Home',
+              title: 'Home'
+            }}
+          />
+          <Drawer.Screen
+            name='edit-kost/[id]'
+            options={{
+              drawerItemStyle: { display: 'none' }
+            }}
+          />
+          <Drawer.Screen
+            name='login'
+            options={{
+              drawerItemStyle: { display: 'none' }
+            }}
+          />
+          <Drawer.Screen
+            name='signup'
+            options={{
+              drawerItemStyle: { display: 'none' }
+            }}
+          />
+          <Drawer.Screen
+            name='details'
+            options={{
+              drawerItemStyle: { display: 'none' }
             }}
           />
         </Drawer>
