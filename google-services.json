@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "885825939786",
+    "project_id": "mj-kost",
+    "storage_bucket": "mj-kost.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885825939786:android:589f5b11380701815bf9b3",
+        "android_client_info": {
+          "package_name": "com.mjkost"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSEkadMe3jqRnHRI9VYkvJ0pqbaoL4rfI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

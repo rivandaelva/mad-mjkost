@@ -1,27 +1,41 @@
-import { Link, useNavigation } from 'expo-router';
-import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useUser } from '../context/UserContext';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
+  const { login } = useUser();
 
-  const navigation = useNavigation();
+  const handleLogin = async () => {
+    if (!username.trim() || !password.trim()) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
 
-  const handleLogin = () => {
-    // Add login logic here
-    console.log('Login attempted:', username);
-
-    // navigate to the home screen
-    navigation.navigate('home');
+    try {
+      const success = await login(username, password);
+      if (success) {
+        router.push('/home');
+        console.log('Login successful');
+      } else {
+        Alert.alert('Error', 'Invalid username or password');
+        console.error('Login failed: Invalid credentials');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong');
+      console.error('Login error:', error);
+    }
   };
 
   return (
-    <View className='flex-1 justify-center px-5 bg-white'>
-      <Text className='text-2xl font-bold mb-8 text-center'>Login</Text>
+    <View className='justify-center flex-1 px-5 bg-white'>
+      <Text className='mb-8 text-2xl font-bold text-center'>Login</Text>
 
       <TextInput
-        className='h-12 border border-gray-300 rounded-lg px-4 mb-4'
+        className='h-12 px-4 mb-4 border border-gray-300 rounded-lg'
         placeholder='Username'
         value={username}
         onChangeText={setUsername}
@@ -29,7 +43,7 @@ const Login = () => {
       />
 
       <TextInput
-        className='h-12 border border-gray-300 rounded-lg px-4 mb-4'
+        className='h-12 px-4 mb-4 border border-gray-300 rounded-lg'
         placeholder='Password'
         value={password}
         onChangeText={setPassword}
@@ -37,21 +51,23 @@ const Login = () => {
       />
 
       <TouchableOpacity
-        className='bg-blue-500 p-4 rounded-lg mt-2'
+        className='p-4 mt-2 bg-blue-500 rounded-lg'
         onPress={handleLogin}>
-        <Text className='text-white text-center font-bold text-base'>
+        <Text className='text-base font-bold text-center text-white'>
           Login
         </Text>
       </TouchableOpacity>
 
-      <Link className='bg-blue-500 p-4 rounded-lg mt-2' href='/signup'>
-        <Text className='text-white text-center font-bold text-base'>
+      <Link
+        className='p-4 mt-2 text-center bg-blue-500 rounded-lg'
+        href='/signup'>
+        <Text className='text-base font-bold text-center text-white'>
           Create Account
         </Text>
       </Link>
 
       <TouchableOpacity className='mt-4'>
-        <Text className='text-blue-500 text-center text-sm'>
+        <Text className='text-sm text-center text-blue-500'>
           Forgot Password?
         </Text>
       </TouchableOpacity>

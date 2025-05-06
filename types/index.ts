@@ -10,4 +10,6 @@ export interface KostItem {
     shower: boolean;
     toilet: boolean;
   };
+  createdAt?: Date;
+  updatedAt?: Date;
 }

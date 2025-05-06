@@ -1,8 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
+  Image,
   ScrollView,
   Text,
   TextInput,
@@ -14,10 +16,11 @@ import { useKost } from '../../context/KostContext';
 const AddKostScreen = () => {
   const router = useRouter();
   const { addKost } = useKost();
+  const [image, setImage] = useState<string | null>(null);
   const [kostData, setKostData] = useState({
     name: '',
     price: '',
-    type: 'Putra', // Default value
+    type: 'Putra',
     facilities: {
       wifi: false,
       ac: false,
@@ -26,8 +29,21 @@ const AddKostScreen = () => {
     }
   });
 
-  const handleSubmit = () => {
-    // Validate required fields
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+      base64: true
+    });
+
+    if (!result.canceled && result.assets[0].base64) {
+      setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
+    }
+  };
+
+  const handleSubmit = async () => {
     if (!kostData.name.trim()) {
       Alert.alert('Error', 'Nama kost harus diisi');
       return;
@@ -38,20 +54,26 @@ const AddKostScreen = () => {
       return;
     }
 
+    if (!image) {
+      Alert.alert('Error', 'Gambar kost harus diisi');
+      return;
+    }
+
     try {
-      // Add new kost using context
-      addKost({
+      await addKost({
         name: kostData.name,
         price: kostData.price,
         type: kostData.type,
         facilities: kostData.facilities,
-        image: 'https://via.placeholder.com/50' // Default image for now
+        image: image,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       });
 
-      // Navigate back to manage kost screen
       router.push('(manage)');
     } catch (error) {
       Alert.alert('Error', 'Gagal menambahkan kost');
+      console.error(error);
     }
   };
 
@@ -66,6 +88,22 @@ const AddKostScreen = () => {
 
       <ScrollView className='p-4'>
         <View className='p-4 bg-white rounded-lg'>
+          {/* Image Picker */}
+          <Text className='mb-2 text-sm text-gray-600'>Foto Kost</Text>
+          <TouchableOpacity
+            onPress={pickImage}
+            className='items-center justify-center w-full h-48 mb-4 bg-gray-100 rounded-lg'>
+            {image ? (
+              <Image
+                source={{ uri: image }}
+                className='w-full h-full rounded-lg'
+                resizeMode='cover'
+              />
+            ) : (
+              <Ionicons name='image-outline' size={48} color='#9CA3AF' />
+            )}
+          </TouchableOpacity>
+
           <Text className='mb-2 text-sm text-gray-600'>Nama Kost</Text>
           <TextInput
             className='h-12 px-4 mb-4 border border-gray-300 rounded-lg'

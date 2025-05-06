@@ -1,7 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { useKost } from '../context/KostContext';
 
 const DetailsScreen = () => {
@@ -22,11 +29,12 @@ const DetailsScreen = () => {
   const handleChat = () => {
     // Add chat functionality
     console.log('Chat with owner of:', kost.name);
+    Linking.openURL('http://wa.me/6289612701094');
   };
 
   const handleBooking = () => {
     // Add booking functionality
-    router.push('/booking');
+    router.push(`/booking?id=${kost.id}`);
   };
 
   const handleMenu = () => {
@@ -44,12 +52,12 @@ const DetailsScreen = () => {
       <View className='flex-1 bg-gray-50'>
         {/* Header */}
         <View className='flex-row items-center justify-between px-4 py-4 bg-white'>
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => router.navigate('home')}>
             <Ionicons name='arrow-back' size={24} color='#4B5563' />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleMenu}>
+          {/* <TouchableOpacity onPress={handleMenu}>
             <Ionicons name='ellipsis-vertical' size={24} color='#4B5563' />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <ScrollView className='flex-1'>
@@ -73,7 +81,7 @@ const DetailsScreen = () => {
             <Text className='mb-2 text-lg font-semibold'>Location</Text>
             <View className='overflow-hidden bg-gray-200 rounded-xl'>
               <Image
-                source={{ uri: 'https://via.placeholder.com/400x200?text=Map' }}
+                source={require('../assets/images/map.png')}
                 className='w-full h-48'
                 resizeMode='cover'
               />

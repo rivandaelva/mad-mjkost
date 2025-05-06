@@ -2,13 +2,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { useKost } from '../../context/KostContext';
 
 const ManageKostScreen = () => {
   const router = useRouter();
   const navigation = useNavigation();
-  const { kosts, deleteKost } = useKost();
+  const { kosts, deleteKost, loading } = useKost();
+
+  if (loading) {
+    return (
+      <View className='items-center justify-center flex-1'>
+        <ActivityIndicator size='large' color='#1e88e5' />
+      </View>
+    );
+  }
 
   const handleDelete = (id: string, name: string) => {
     Alert.alert('Delete Kost', `Are you sure you want to delete ${name}?`, [

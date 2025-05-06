@@ -19,37 +19,85 @@ const HomeScreen = () => {
   const { kosts } = useKost();
   const [searchValue, setSearchValue] = useState('');
   const [activeFilter, setActiveFilter] = useState<
-    'Putra' | 'Putri' | 'Campur'
-  >('Putra');
+    'All' | 'Putra' | 'Putri' | 'Campur'
+  >('All');
 
   // Filter kost items based on search value and active filter
   const filteredKostItems = useMemo(() => {
-    return kosts
-      .filter((item) =>
+    // If activeFilter is 'all', we don't filter by type
+    if (activeFilter === 'All' && searchValue === '') {
+      return kosts;
+    }
+
+    if (searchValue !== '' && activeFilter !== 'All') {
+      return kosts.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase()) &&
+          item.type === activeFilter
+      );
+    }
+
+    if (searchValue !== '') {
+      return kosts.filter((item) =>
         item.name.toLowerCase().includes(searchValue.toLowerCase())
-      )
-      .filter((item) => item.type === activeFilter);
+      );
+    }
+
+    if (activeFilter !== 'All') {
+      return kosts.filter((item) => item.type === activeFilter);
+    }
+
+    return kosts;
   }, [searchValue, activeFilter, kosts]);
 
   const renderKostItem = ({ item }: { item: KostItem }) => (
     <TouchableOpacity
       onPress={() => router.push(`/details?id=${item.id}`)}
-      className='flex-row items-center p-4 mb-2 bg-white rounded-lg shadow-sm'>
-      <Image source={{ uri: item.image }} className='w-12 h-12 rounded-full' />
-      <Text className='flex-1 ml-4 font-medium'>{item.name}</Text>
-      <View className='flex-row gap-2'>
-        {item.facilities.wifi && (
-          <Ionicons name='wifi' size={20} color='#4B5563' />
-        )}
-        {item.facilities.ac && (
-          <Ionicons name='snow' size={20} color='#4B5563' />
-        )}
-        {item.facilities.shower && (
-          <Ionicons name='water' size={20} color='#4B5563' />
-        )}
-        {item.facilities.toilet && (
-          <Ionicons name='home' size={20} color='#4B5563' />
-        )}
+      className='flex-row p-4 mb-2 bg-white rounded-lg shadow-sm'>
+      {/* Left side - Image */}
+      <Image
+        source={{ uri: item.image }}
+        className='w-24 h-24 rounded-lg'
+        resizeMode='cover'
+      />
+
+      {/* Right side - Content */}
+      <View className='flex-1 ml-4'>
+        {/* Title */}
+        <Text className='text-lg font-bold text-gray-900'>{item.name}</Text>
+
+        {/* Price */}
+        <Text className='mt-1 text-base text-blue-500'>
+          Rp {item.price}/bulan
+        </Text>
+
+        {/* Facilities */}
+        <View className='flex-row gap-2 mt-2'>
+          {item.facilities.wifi && (
+            <View className='flex-row items-center'>
+              <Ionicons name='wifi' size={16} color='#4B5563' />
+              <Text className='ml-1 text-xs text-gray-600'>Wifi</Text>
+            </View>
+          )}
+          {item.facilities.ac && (
+            <View className='flex-row items-center'>
+              <Ionicons name='snow' size={16} color='#4B5563' />
+              <Text className='ml-1 text-xs text-gray-600'>AC</Text>
+            </View>
+          )}
+          {item.facilities.shower && (
+            <View className='flex-row items-center'>
+              <Ionicons name='water' size={16} color='#4B5563' />
+              <Text className='ml-1 text-xs text-gray-600'>Shower</Text>
+            </View>
+          )}
+          {item.facilities.toilet && (
+            <View className='flex-row items-center'>
+              <Ionicons name='home' size={16} color='#4B5563' />
+              <Text className='ml-1 text-xs text-gray-600'>Toilet</Text>
+            </View>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -63,7 +111,8 @@ const HomeScreen = () => {
           <Ionicons name='menu' size={24} color='#4B5563' />
         </TouchableOpacity>
         <Text className='text-lg font-bold'>Home</Text>
-        <Ionicons name='search' size={24} color='#4B5563' />
+        {/* <Ionicons name='search' size={24} color='#4B5563' /> */}
+        <View></View>
       </View>
 
       {/* Search Input */}
@@ -89,7 +138,7 @@ const HomeScreen = () => {
 
       {/* Filter Buttons */}
       <View className='flex-row gap-2 px-4 mb-4'>
-        {['Putra', 'Putri', 'Campur'].map((filter) => (
+        {['All', 'Putra', 'Putri', 'Campur'].map((filter) => (
           <TouchableOpacity
             key={filter}
             className={`px-4 py-2 rounded-full ${
